@@ -1,7 +1,10 @@
+"""
+Note: bitcoin_prepro_v2.ipynb 파일을 통해 생성된 df에 적용할 것
+"""
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-#import torch
 
 def create_sequence(df, seq_len):
     # 1. 변수 선택
@@ -15,7 +18,7 @@ def create_sequence(df, seq_len):
     # target을 제외한 나머지 종속변수 삭제
     cols_to_drop = [var for var in target_var_lst if var != target_var]
     df.drop(columns=cols_to_drop, inplace=True) # 종속변수
-    #df['returns_next10m'] = df['returns_next10m'].apply(lambda x: 0 if x <= 0 else 1)
+    #df['returns_next10m'] = df['returns_next10m'].apply(lambda x: 0 if x <= 0 else 1) 2진 분류화는 ipynb 파일에서 직접 수행
 
     # 종속변수를 데이터 프레임 맨 뒤로 옮기기
     cols = df.columns.tolist()
