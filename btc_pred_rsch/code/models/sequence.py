@@ -51,3 +51,44 @@ def create_sequence(df, seq_len):
     y = sequences[:, -1, -1].reshape(-1, 1) # 각 시퀀스의 마지막 행, 마지막 컬럼의 값
 
     return X, y
+
+
+
+def createSeqForBacktest(df, seq_len):
+    # 1. 변수 선택
+    target_var_lst = ['returns', 'returns_next10m', 'realized_vol_next10m']
+    target_var = 'returns_next10m' # 종속변수
+
+    # 시퀀스 생성 전 필요없는 컬럼 삭제
+    df.drop(columns=['window_start', 'window_end','num_rows', 'time_id'], inplace=True)
+
+    # target을 제외한 나머지 종속변수 삭제
+    cols_to_drop = [var for var in target_var_lst if var != target_var]
+    df.drop(columns=cols_to_drop, inplace=True)
+
+    # 종속변수를 데이터 프레임 맨 뒤로 옮기기
+    cols = [col for col in df.columns if col not in ['returns_next10m', 'returns_next10m_binary']] + ['returns_next10m', 'returns_next10m_binary']
+    df = df[cols]
+
+    # 2. sequence 생성
+    sequences = []
+    scaler = MinMaxScaler()
+    
+    for start_idx in range(len(df) - seq_len + 1):
+        end_idx = start_idx + seq_len
+        sequence = df.iloc[start_idx:end_idx]
+        
+        if sequence['del_idx'].sum() == 0:
+            scaled_sequence = scaler.fit_transform(sequence.drop(columns=['del_idx', 'returns_next10m', 'returns_next10m_binary']))
+            scaled_sequence_with_target = pd.concat([pd.DataFrame(scaled_sequence), sequence[['returns_next10m', 'returns_next10m_binary']].reset_index(drop=True)], axis=1)
+            sequences.append(scaled_sequence_with_target.values)
+            
+    sequences = np.array(sequences)
+
+    # 3. X, y, y_for_backtest split
+    X = sequences[:, :, :-2] # 마지막 두 컬럼을 제외한 나머지
+    y = sequences[:, -1, -1].reshape(-1, 1) # 각 시퀀스의 마지막 행, 마지막 컬럼
+    y_for_backtest = sequences[:, -1, -2:].reshape(-1, 2) # 각 시퀀스의 마지막 행, 끝에서 두 번째와 마지막 컬럼
+
+    return X, y, y_for_backtest
+
