@@ -27,7 +27,7 @@
   - 유의미하지 않은 하락
 
 - 독립변수 (Features): 총 80개 이상의 차트 지표를 사용하여 모델을 훈련.
- - 주요 변수:
+  - 주요 변수:
   - ask_price_n 및 bid_price_n: 매도/매수 가격 (1~15차 레벨)
   - ask_size_n 및 bid_size_n: 매도/매수 사이즈 (1~15차 레벨)
   - total_ask_size, total_bid_size: 총 매도/매수 사이즈
