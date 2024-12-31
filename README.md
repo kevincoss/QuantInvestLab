@@ -38,7 +38,6 @@
   - latest_trade_price, latest_log_return: 최근 거래 가격 및 로그 수익률
   - EMA4, EMA9, EMA18: 지수 이동 평균 (Exponential Moving Average)
   - RSI3: 상대 강도 지수 (Relative Strength Index)
-  - bid_ask_spread, mid_price, mid_price_diff: 매도-매수 스프레드 및 중간 가격
   - slope1 ~ slope7: 기울기 지표
   - 기타 파생 변수
 
